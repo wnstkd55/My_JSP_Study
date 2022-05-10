@@ -16,13 +16,17 @@
 	String name = request.getParameter("name");
 	String email = request.getParameter("email");
 	
-	Statement stmt = null;	//Statement 객체 : SQL 쿼리 구문을 실행하는 객체
+	PreparedStatement pstmt = null;	//PreparedStatement 객체 : SQL 쿼리 구문을 실행하는 객체
 	String sql = null;		//전역변수로 선언
 	
 	try{
-		sql ="INSERT INTO mbtb1 ( idx, id, pass, name, email ) Values (seq_mbTb1_idx.nextval, '" + id + "','"+  passwd + "','" + name+"','" + email + "') ";
-		stmt = conn.createStatement();	//connection객체를 통해서 statement객체 생성
-		stmt.executeUpdate(sql);		//statement객체를 통해서 sql을 실행함.
+		sql ="INSERT INTO mbtb1 ( idx, id, pass, name, email ) Values (seq_mbTb1_idx.nextval,?,?,?,? )";
+		pstmt = conn.prepareStatement(sql);	 	//PreparedStatement 객체 생성시에 sql 구문을 넣습니다.
+		pstmt.setString(1,id);
+		pstmt.setString(2,passwd);
+		pstmt.setString(3,name);
+		pstmt.setString(4,email);
+		pstmt.executeUpdate();
 				//stmt.executeUpdate(sql) : sql <== insert, delete update문이 온다.
 				//stmt.executeQuery(sql) : sql <== select문이 오면서 결과를 Resultset객체로 반환
 		out.println("테이블 삽입에 성공하였습니다.");
@@ -37,8 +41,8 @@
 		out.println(sql);
 		
 	}finally{
-		if(stmt != null)
-			stmt.close();
+		if(pstmt != null)
+			pstmt.close();
 		if(conn!=null)
 			conn.close();
 	}
@@ -50,7 +54,7 @@
 <%=email %><p><p>
 
 
-<%=sql %><p><p>				//html블락에서 출력할때
+<%=sql %><p><p>				
 <% out.println(sql); %>
 
 
