@@ -66,5 +66,5 @@
   } catch (SQLException e) {
    out.println(e);
   }
-  response.sendRedirect("freeboard_list.jsp?go="+request.getParameter("page"));
+  response.sendRedirect("freeboard_list.jsp?go="+request.getParameter("page"));		//url ÁÖ¼Ò°¡ ¹Ù²î°Ô µÊ.
  %>

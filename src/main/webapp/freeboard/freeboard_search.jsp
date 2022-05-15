@@ -23,12 +23,26 @@
      <SELECT name=stype >
 <% 
  String cond = null;
- int what = 1;
- String val=null;  
+ int what = 1;		
+/*
+// what : stype에서 넘긴 변수를 담고 있다.
+value=1 >이름
+value=2 >제목
+value=3 >내용
+value=4 >이름+제목
+value=5 >이름+내용
+value=6 >제목+내용
+value=7 >이름+제목+내용
+*/ 
+ String val=null;	//검색 단어를 저장하는 변수
+ 
+ //w
+ 
+ 
  if (request.getParameter("stype") != null) {
   what = Integer.parseInt(request.getParameter("stype"));
   val= request.getParameter("sval");
-  if (what==1) {
+  if (what==1) {	// " 1  = > 이름 "
    out.println("<OPTION value=1 selected>이름");
    cond = " where name like '%"+ val+ "%'";
   } else  
@@ -108,7 +122,7 @@
  int where=1;
 
  int totalgroup=0;
- int maxpages=2;
+ int maxpages=2;	//최대 출력 페이지 갯수
  int startpage=1;
  int endpage=startpage+maxpages-1;
  int wheregroup=1;
@@ -147,6 +161,11 @@
   st = conn.createStatement();
   String sql = "select * from freeboard " + cond;
   sql = sql + " order by id desc" ;
+  
+//  out.println(sql);
+  
+//  if(true)return;
+  
   rs = st.executeQuery(sql);
   if (!(rs.next()))  {
    out.println("해당하는 글이 없습니다");

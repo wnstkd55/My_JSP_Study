@@ -204,6 +204,8 @@
     out.println("<TD align=center>");
     out.println(id+"</TD>");
     out.println("<TD>");
+    	// step : 글의 깊이, 0, -처음글, 1- 답변글, 2- 답변의 답변글
+    
     int stepi= ((Integer)step.elementAt(j)).intValue();
     int imgcount = j-startrow; 
     if (stepi > 0 ) {

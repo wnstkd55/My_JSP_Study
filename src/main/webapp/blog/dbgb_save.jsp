@@ -14,15 +14,16 @@
 <%
 	String na = request.getParameter("name");
 	String em = request.getParameter("email");
+	String inp = request.getParameter("inputdate");
 	String sub = request.getParameter("subject");
 	String cont = request.getParameter("content");
-	String pw = request.getParameter("password");
 	
-	int id = 1;		//DB에 ID 컬럼에 저장할 값
 	int pos = 0;
+	/*
 	if(cont.length()==1){
 		cont = cont + " ";
 	}
+	*/
 	
 	//textarea 내의 ' 가 들어가면 db에 insert, update시 문제 발생
 	
@@ -36,13 +37,14 @@
 		cont = left + "\'" + right;
 		pos += 2;
 	}
-	
+
 	//if(true)return;
 	
 	//오늘의 날짜 처리
 	java.util.Date yymmdd = new java.util.Date();
 	SimpleDateFormat myformat = new SimpleDateFormat("yy-MM-dd h:mm a");
 	String ymd = myformat.format(yymmdd);
+	inp = ymd;
 	
 	String sql = null;
 	Statement st = null;
@@ -50,26 +52,9 @@
 	int cnt = 0;		// Insert가 잘 되었는지 그렇지 않은지 확인하는 변수
 	
 	try{
-		// 값을 저장하기 전에 최신 글 번호(max(id))를 가져와서 +1을 적용한다.
-		// conn (Connection) : Auto commit;이 작동됨.
-			//commit을 명시하지 않아도 inert, update, delete, 자동 커밋이 된다.
+		
+		sql = "INSERT INTO guestboard(name, email,inputdate,subject,content)values('"+na+"', '"+em+"', '"+inp+"', '"+sub+"', '"+cont+"')";
 		st = conn.createStatement();
-		sql = "select max(id) from freeboard";
-		rs = st.executeQuery(sql);
-		
-		if(!(rs.next())){	//rs의 값이 비어있을때
-			id = 1;
-		}else{		//rs의 값이 존재할때
-			id = rs.getInt(1) + 1;	//최대값 +1 
-		}
-		
-		
-		sql = "INSERT INTO freeboard(id, name, password, email, subject, ";
-		sql = sql + "content, inputdate, masterid, readcount, replynum,step)";
-		sql = sql + " values("+id+", '"+na+"', '"+pw+"', '"+em;
-		sql = sql + "', '"+sub+"', '"+cont+"', '"+ymd+"', "+id+",";
-		sql = sql + "0,0,0)";
-		
 		//out.println(sql);
 		
 		cnt = st.executeUpdate(sql);	// cnt > 0 : Insert 성공
@@ -95,7 +80,7 @@
 	
 %>
 
-<jsp:forward page = "freeboard_list.jsp"/>
+<jsp:forward page = "dbgb_show.jsp"/>
 
 <!-- 
 
@@ -104,18 +89,5 @@
 	response.sendRedirect : 
 		클라이언트에서 페이지를 재요청으로 페이지 이동, 이동하는 페이지로 url정보가 바뀐다.
 	--> 
-
-
-
-
- -->
-
-
-
-
-
-
-
-
 </body>
 </html>

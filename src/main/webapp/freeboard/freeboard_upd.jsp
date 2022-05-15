@@ -5,7 +5,7 @@
 <HEAD>
 <SCRIPT language="javascript">
 function check() {
- with(document.msgwrite){
+ with(document.msgwrite){ 			//document : 문서전체, msgwrite : form
   if(subject.value.length == 0){
    alert("제목을 입력해 주세요!!");
    subject.focus();

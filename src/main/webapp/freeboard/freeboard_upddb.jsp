@@ -17,8 +17,11 @@
  int pos=0;
  String cont=request.getParameter("content");
 
- if (cont.length()==1) 
+ if (cont.length()==1) 		//글 내용이 1 이라면
   cont = cont+" " ;
+ 
+ //textarea내의 ' 가 들어가면 DB에 insert가 안된다.
+ 
   while ((pos=cont.indexOf("\'", pos)) != -1) {
    String left=cont.substring(0, pos);
    String right=cont.substring(pos, cont.length());
