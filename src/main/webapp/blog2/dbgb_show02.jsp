@@ -54,7 +54,7 @@
 	
 	int maxrows = 2;		// 출력시 2개의 레코드만 출력
 	int totalrows = 0;			// 총 레코드 갯수(DB)
-	int totalpages = 0;
+	int totalpage = 0;
 	
 	
 	String sql = null;
@@ -69,88 +69,38 @@
 		if(!(rs.next())){			// rs(결과값이 존재하지 않을때)
 			out.println("블로그에 올린 글이 없습니다.");
 		}else{			//rs의 결과값이 존재할때, DB에서 가져온 값 출력 시작
-			do{		//DB에서 가져온 값을 Vector에 저장 후 원하는 페이지번호의 값들을 벡터에서 가지고온다.(페이징 처리를 위해서)
-				
-				name.addElement(rs.getString("name"));
-				email.addElement(rs.getString("email"));
-				inputdate.addElement(rs.getString("inputdate"));
-				subject.addElement(rs.getString("subject"));
-				content.addElement(rs.getString("content"));
-				
-				
-				
-			}while(rs.next());		//rs에 값이 존재하는동안 계속 순환하면서 출력
-			
-			//출력할 변수의 범위를 지정
-			totalrows = name.size();	//벡터에 저장된 총 값( DB의 총 레코드 갯수 )
-			totalpages = (totalrows - 1 ) / maxrows + 1;
-			startrow = (where - 1) * maxrows;		//특정 페이지에서 시작 row
-			endrow = startrow + maxrows - 1;		//특정 페이지에서 마지막 row
-			if(endrow >= totalrows)
-				endrow = totalrows - 1;
-			
-			totalgroup = (totalpages - 1)/maxpage + 1;		//totalgroup을 생성하는 수식
-			
-			if(endpage > totalpages)
-				endpage = totalpages;
-			
-			for(int j = startrow; j <= endrow; j++){	// for문 시작
-				//벡터에 저장된 값을 가져와서 출력.
-				%>
-					<table width = "600" border = "1">
-					<tr>
-						<td colspan = "2" align = "center"> <h3><%= subject.elementAt(j) %><h3></td>
-					</tr>
-					<tr>
-						<td>글쓴이 : <%=name.elementAt(j)%></td>
-						<td>이메일 : <%=email.elementAt(j)%></td>
-					</tr>
-					<tr>
-						<td colspan = "2">글쓴날짜 : <%= inputdate.elementAt(j)%></td>
-					</tr>
-					<tr>
-						<td colspan = "2" width = "600"> <%= content.elementAt(j)%> </td>
-					</tr>
-					
-					</table> <p><p>
-				
-			<%
-			}	// for문 끝
-			
-			//out.println("startrow : " + startrow + "<p>");
-			//out.println("endrow : " + endrow + "<p>");
-			
-			//페이징 출력 부분 처리
-			if (wheregroup > 1) {	
-				  out.println("[<A href=dbgb_show.jsp?gogroup=1>처음</A>]"); 
-				  out.println("[<A href=dbgb_show.jsp?gogroup="+priorgroup +">이전</A>]");
-				 } else {
-				  out.println("[처음]") ;
-				  out.println("[이전]") ;
-				 }
-				 if (name.size() !=0) { 
-				  for(int jj= startpage; jj <= endpage; jj++) {
-				   if (jj == where) 
-				    out.println("[" + jj + "]") ;
-				   else
-				    out.println("[<A href=dbgb_show.jsp?go=" + jj + ">" + jj + "</A>]") ;  
-				   } 
-				  }
-				  if (wheregroup < totalgroup) {
-				   out.println("[<A href=dbgb_show.jsp?gogroup="+ nextgroup+ ">다음</A>]");
-				   out.println("[<A href=dbgb_show.jsp?gogroup="+ totalgroup + ">마지막</A>]");
-				  } else {
-				   out.println("[다음]");
-				   out.println("[마지막]");
-				  }
-				  out.println(where+"/"+totalpages);
-			 
-			 out.println ("<p>");
-			
-			
-			
+			do{
+%>
+	<table width = "600" border = "1">
+	<tr height = "25"><td colspan = "2">&nbsp;</td></tr>		<!-- 공백 -->
+	<tr>
+		<td colspan = "2" align = "center"> <h3><%= rs.getString("subject") %><h3></td>
+	</tr>
+	<tr>
+		<td>글쓴이 : <%= rs.getString("name")%></td>
+		<td>이메일 : <%= rs.getString("email")%></td>
+	</tr>
+	<tr>
+		<td colspan = "2">글쓴날짜 : <%= rs.getString("inputdate")%></td>
+	</tr>
+	<tr>
+		<td colspan = "2" width = "600"> <%= rs.getString("content")%> </td>
+	</tr>
+	
+	<tr height = "25"><td colspan = "2">&nbsp;</td></tr>		<!-- 공백 -->
+	</table>
+<%				}while(rs.next());		//rs에 값이 존재하는동안 계속 순환하면서 출력
 		}				// 출력 끝
 		
+
+
+
+
+
+
+
+
+
 
 	
 	}catch(Exception ex){

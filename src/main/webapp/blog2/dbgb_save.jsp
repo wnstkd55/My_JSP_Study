@@ -1,79 +1,67 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
-<%@ page import = "java.text.SimpleDateFormat" %>
-<%@ page language="java" import="java.sql.*,java.util.*,java.text.*" %>
+<%@ page import = "java.sql.*, java.util.*"  %>
 
-<% request.setCharacterEncoding("EUC-KR"); %>
-<%@ include file = "dbconn_oracle.jsp" %>
+<% request.setCharacterEncoding("EUC-KR"); %>	<!-- Form에서 넘겨주는 한글을 깨지지 않도록 한글처리 -->
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="EUC-KR">
-<title>DataBase저장</title>
+<title>form에서 넘겨받은 값을 DB에 insert하는 페이지</title>
 </head>
 <body>
-	<%
-		// 폼에서 받은 변수를 저장
-		String na = request.getParameter("name");
-		String em = request.getParameter("email");
-		String sub = request.getParameter("subject");
-		String cont = request.getParameter("content");
+<%@ include file = "db_conn_oracle.jsp"%>	<!--  Connection 객체 -->
+<%
+	String na = request.getParameter("name");
+	String em = request.getParameter("email");
+	String sub = request.getParameter("subject");
+	String cont = request.getParameter("content");
+	String ymd = (new java.util.Date()).toLocaleString();		//현재 시스템의 로케일(한국)
 	
-		int pos = 0;		
-		if(cont.length() == 1) {
-			cont = cont + " ";
+	// 폼에서 넘긴 변수가 잘 넘어오는지 확인
+	//out.println(na + "<p>" + em + "<p>" + sub + "<p>" + cont + "<p>" + ymd);
+
+	String sql = null;
+	Statement st = null;	//Statement : sql 구문을 실행하는 객체
+				// conn 객체에서 자동으로 커밋 구문이 적용되어 있음.
+	int cnt = 0;	//insert, update, delete가 잘 적용되었는지 확인
+					//cnt > 0 : insert, update, delete가 잘 적용되었는지 확인
+	
+	try{
+		sql = "insert into guestboard2(name, email, inputdate, subject, content)";
+		sql = sql + " values('"+na+"', '"+em+"', '"+ymd+"', '"+sub+"', '"+cont+"')";
+		
+		st = conn.createStatement();		//st : statemenet 객체 활성화 (XE, hr2, 1234)
+							//conn => hr2 계정의 1234 암호로 접속되어있다.
+		cnt = st.executeUpdate(sql); //insert, update, delete문인 경우
+		
+		
+		/*
+		if(cnt > 0){
+			out.println("DB에 잘 insert가 되었습니다.");
+		}else{
+			out.println("DB에 insert가 되지 않았습니다.");
 		}
 		
-		//textarea ' 처리
-		while ( (pos = cont.indexOf("\'" , pos) ) != -1) {
-			String left = cont.substring(0,pos);
-			String right = cont.substring(pos, cont.length());
-			pos += 2;
-		}
+		*/
 		
-		// 오늘의 날짜 처리
-		java.util.Date yymmdd = new java.util.Date();
-		SimpleDateFormat myformat = new SimpleDateFormat ("YYYY.MM.dd. a h:mm:ss");
-		String ymd = myformat.format(yymmdd);
-		
-		// 저장하기
-		String sql = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		int cnt = 0;	// insert 잘 되었는지 확인
-		
-		try{
-			sql = "Insert into guestboard (name, email, inputdate, subject, content)";
-			sql = sql + " values(?,?,?,?,?)";
-			
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, na);
-			pstmt.setString(2, em);
-			pstmt.setString(3, ymd);
-			pstmt.setString(4, sub);
-			pstmt.setString(5, cont);
-			
-			cnt = pstmt.executeUpdate();
-			
-			if(cnt > 0) {
-				out.println("데이터가 성공적으로 입력 되었습니다.");
-			}else {
-				out.println("데이터가 입력되지 않았습니다.");
-			}
-			
-		} catch (Exception e) {
-			out.print(e.getMessage());
-		}finally{
-			if( rs != null)
-				rs.close();
-			if ( pstmt != null)
-				pstmt.close();
-			if (conn != null)
-				conn.close();
-		}
-	%>
-	
-	<jsp:forward page = "dbgb_show.jsp" />
-	
+		// sql 구문이 잘 넘어오는지 확인을 위한 구문
+		//out.println(sql);
+		//if(true)return;
+	}catch(Exception ex){
+		out.println(ex.getMessage());	
+	}finally{
+		if(st != null)
+			st.close();
+		if(conn != null)
+			conn.close();
+	}
+
+
+%>
+
+<jsp:forward page = "dbgb_show.jsp"/>
+
+ 
 </body>
 </html>
